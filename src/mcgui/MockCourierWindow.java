@@ -10,14 +10,14 @@ import javax.swing.JSplitPane;
 public class MockCourierWindow implements Runnable {
 	private JSplitPane _splitPane = null;
 	private JLabel _statusBar = null;
-	private AppPane _appPane = null;
-	private UserPane _userPane = null;
+	private MCAppPane _appPane = null;
+	private MCUserPane _userPane = null;
 	
 	// this is the thread-safe entry to the Swing Creation methods
 	@Override
 	public void run() {
-		_appPane = new AppPane();
-		_userPane = new UserPane();
+		_appPane = new MCAppPane();
+		_userPane = new MCUserPane();
 		initialize();
 	}
 	
@@ -31,7 +31,6 @@ public class MockCourierWindow implements Runnable {
 		_splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, _appPane, _userPane);
 		_splitPane.setResizeWeight(0.5);
 		_appPane.initialize();
-		_userPane.initialize();
 		
 		// status bar
 		_statusBar = new JLabel("THIS IS THE STATUS OF THE APPLICATION...");
