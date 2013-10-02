@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
 
+import mcuserpane.MCUserPane;
+
 public class MockCourierWindow implements Runnable {
 	private JSplitPane _splitPane = null;
 	private JLabel _statusBar = null;

@@ -1,4 +1,4 @@
-package mcgui;
+package mcuserpane;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -6,11 +6,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+
 @SuppressWarnings("serial")
 public class MCUserPane extends JPanel {
 	private MCCanvas _canvas = null;
 	
-	protected MCUserPane() {
+	public MCUserPane() {
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		// setup the canvas
