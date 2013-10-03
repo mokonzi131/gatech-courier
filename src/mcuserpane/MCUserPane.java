@@ -1,22 +1,34 @@
 package mcuserpane;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
+
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 
+import mcgui.MockCourierWindow;
 
 @SuppressWarnings("serial")
-public class MCUserPane extends JPanel {
-	private MCCanvas _canvas = null;
-	
+public class MCUserPane extends JPanel implements MouseListener, MouseMotionListener {	
+	private MCCanvas _canvas;
+	private MCCanvasControls _canvasControls;
+	protected MCModel _model;
+		
 	public MCUserPane() {
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
+		// setup the model
+		_model = new MCModel();
+		
 		// setup the canvas
-		_canvas = new MCCanvas();
-		this.setVisible(true);
+		_canvas = new MCCanvas(_model);
+		_canvas.addMouseListener(this);
+		_canvas.addMouseMotionListener(this);
 		this.add(_canvas);
 		
 		// setup the page controls
@@ -28,25 +40,75 @@ public class MCUserPane extends JPanel {
 		this.add(pageControls);
 		
 		// setup the canvas controls
-		JPanel canvasControls = new JPanel();
-		JRadioButton free = new JRadioButton("Free Form Ink");
-		JRadioButton rect = new JRadioButton("Rectangle");
-		JRadioButton oval = new JRadioButton("Oval");
-		JRadioButton text = new JRadioButton("Text");
+		_canvasControls = new MCCanvasControls();
+		this.add(_canvasControls);
 		
-		free.setSelected(true);
+		this.setVisible(true);
+	}
+	
+	// canvas mouse event listeners (controller - user input)
+	@Override public void mouseDragged(MouseEvent e) {		
+		Point point = e.getPoint();
+		Point2D.Double point2 = new Point2D.Double(point.getX(), point.getY());
 		
-		ButtonGroup selectionGroup = new ButtonGroup();
-		selectionGroup.add(free);
-		selectionGroup.add(rect);
-		selectionGroup.add(oval);
-		selectionGroup.add(text);
+		_model._drawingCurrentPoint = point2;
+		if (_model._drawingShape != null)
+			_model._drawingShape.update(point2);
+		_canvas.repaint();
+	}
+	@Override public void mouseMoved(MouseEvent e) {}
+
+	@Override public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override public void mousePressed(MouseEvent e) {
+		MCCanvasControls.MODE mode = _canvasControls.currentMode();
 		
-		canvasControls.add(free);
-		canvasControls.add(rect);
-		canvasControls.add(oval);
-		canvasControls.add(text);
+		Point point = e.getPoint();
+		Point2D.Double point2 = new Point2D.Double(point.getX(), point.getY());
+		switch (mode) {
+		case FREE:
+			_model._drawingShape = new MCOFree(point2);
+			break;
+		case RECT:
+			_model._drawingShape = new MCORectangle(point2, point2);
+			break;
+		case OVAL:
+			_model._drawingShape = new MCOOval(point2, point2);
+			break;
+		case TEXT:
+			_model._drawingShape = new MCOText(point2, point2);
+			break;
+		default:
+			break;
+		}
 		
-		this.add(canvasControls);
+		_model._drawingStartPoint = point2;
+		_canvas.repaint();
+	}
+
+	@Override public void mouseReleased(MouseEvent e) {
+		// add our new shape to the list
+		if (_model._drawingShape != null) {
+			_model._drawingShape.create();
+			_model._objects.add(_model._drawingShape);
+		}
+		
+		// release all current drawing resources
+		_model._drawingStartPoint = null;
+		_model._drawingCurrentPoint = null;
+		_model._drawingShape = null;
+		
+		// call damage
+		_canvas.repaint();
+	}
+
+	@Override public void mouseEntered(MouseEvent e) {
+		MockCourierWindow.getInstance().setStatus("INSIDE");
+	}
+
+	@Override public void mouseExited(MouseEvent e) {
+		MockCourierWindow.getInstance().setStatus("OUTSIDE");
 	}
 }

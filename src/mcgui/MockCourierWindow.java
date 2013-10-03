@@ -10,6 +10,21 @@ import javax.swing.JSplitPane;
 import mcuserpane.MCUserPane;
 
 public class MockCourierWindow implements Runnable {
+	// singleton access pattern to application
+	private static volatile MockCourierWindow _instance = null;
+	private MockCourierWindow() {}
+	public static MockCourierWindow getInstance() {
+		if (_instance == null) {
+			synchronized (MockCourierWindow.class) {
+				if (_instance == null) {
+					_instance = new MockCourierWindow();
+				}
+			}
+		}
+		return _instance;
+	}
+	
+	// instance variables
 	private JSplitPane _splitPane = null;
 	private JLabel _statusBar = null;
 	private MCAppPane _appPane = null;
@@ -44,5 +59,9 @@ public class MockCourierWindow implements Runnable {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+	}
+	
+	public void setStatus(String message) {
+		_statusBar.setText(message);
 	}
 }
