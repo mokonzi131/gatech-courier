@@ -21,8 +21,8 @@ public class MCCanvas extends JPanel {
 	protected MCCanvas(MCModel model) {		
 		_model = model;
 		this.setBorder(new LineBorder(Color.BLACK, 2));
-		_width = 500;
-		_height = 500;	
+		_width = 800;
+		_height = 600;	
 		_paperBG = new Color(255, 253, 117);
 		_paperLine = new Color(71, 136, 255);
 		this.setVisible(true);
@@ -63,21 +63,25 @@ public class MCCanvas extends JPanel {
 		RenderingHints hints = new RenderingHints(
 				RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
+		RenderingHints textHints = new RenderingHints(
+				RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.addRenderingHints(hints);
+		g.addRenderingHints(textHints);
 		
 		// draw list of stored items
-		for (MCObject object : _model._objects)
+		for (MCObject object : _model.objects())
 			object.render(g);
 		
 		// draw current shape
-		if (_model._drawingShape != null)
-			_model._drawingShape.render(g);
+		if (_model.drawingShape() != null)
+			_model.drawingShape().render(g);
 		
 		// draw current control points
-		if (_model._drawingStartPoint != null)
-			drawControlPoint(g, _model._drawingStartPoint);
-		if (_model._drawingCurrentPoint != null)
-			drawControlPoint(g, _model._drawingCurrentPoint);
+		if (_model.drawingStartPoint() != null)
+			drawControlPoint(g, _model.drawingStartPoint());
+		if (_model.drawingCurrentPoint() != null)
+			drawControlPoint(g, _model.drawingCurrentPoint());
 		
 		// replace old pen
 		g.setStroke(oldStroke);

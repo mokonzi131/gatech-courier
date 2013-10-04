@@ -8,5 +8,5 @@ public abstract class MCObject {
 	public Color _color = Color.GREEN;
 	public abstract void update(Point2D.Double point);
 	public abstract void render(Graphics2D g);
-	public abstract void create();
+	public abstract void initiate();
 }

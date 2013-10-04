@@ -30,7 +30,7 @@ public class MCOOval extends MCObject {
 	}
 
 	@Override
-	public void create() {
+	public void initiate() {
 		_color = Color.RED;
 	}
 }
